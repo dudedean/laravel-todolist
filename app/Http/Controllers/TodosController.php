@@ -30,7 +30,7 @@ class TodosController extends Controller
      */
     public function create()
     {
-        //
+        return view('todos.create');
     }
 
     /**
@@ -41,6 +41,20 @@ class TodosController extends Controller
      */
     public function store(Request $request)
     {
+
+        $this->validate($request,[
+            'text' =>'required'
+        ]);
+
+        $todo = new Todo;
+        $todo->text = $request->text;
+        $todo->body = $request->body;
+        $todo->due = $request->due;
+
+        $todo->save();
+
+        return redirect('/')->with('success','Todo Created!');
+
 
     }
 
@@ -65,7 +79,9 @@ class TodosController extends Controller
      */
     public function edit($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+
+        return view('todos.edit',compact('todo'));
     }
 
     /**
@@ -77,7 +93,15 @@ class TodosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+
+        $todo->text = $request->text;
+        $todo->body = $request->body;
+        $todo->due = $request->due;
+
+        $todo->save();
+
+        return redirect('/')->with('success', 'Todo Updated!');
     }
 
     /**
@@ -88,6 +112,11 @@ class TodosController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+
+        $todo->delete();
+
+        return redirect('/')->with('success', 'Todo Deleted!');
+        
     }
 }
